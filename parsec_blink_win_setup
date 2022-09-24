@@ -1,0 +1,71 @@
+import requests, getpass, time, os
+
+
+#variable to retrieve local username account the script is run on
+usrname = getpass.getuser()
+
+#variable to save Parsec installer and Parsec Virtual Drive application on specified directory
+destination = f'C:\\Users\\{usrname}\\Downloads\\'
+#filepath location of the Parsec config.txt 
+client_wacom = f'C:\\Users\\{usrname}\\AppData\\Roaming\\Parsec\\config.txt'
+config_path = f'C:\\Users\\{usrname}\\AppData\\Roaming\\Parsec\\'
+
+print('Parsec installer and Parsec VUD installer are downloading.')
+
+parsecURL = 'https://builds.parsecgaming.com/package/parsec-windows.exe'
+vudURL = 'https://builds.parsec.app/vud/parsec-vud-0.1.1.0.exe'
+
+parsec = requests.get(parsecURL,allow_redirects=True)
+vud = requests.get(vudURL,allow_redirects=True)
+
+filename = parsec.url[parsecURL.rfind('/')+1:]
+filename_2 = vud.url[vudURL.rfind('/')+1:]
+
+print('Starting Parsec executables...')
+                   
+open(destination + filename, 'wb').write(parsec.content)
+open(destination + filename_2, 'wb').write(vud.content)
+
+time.sleep(4) #Pause for 4 second for applications to download
+print('Install one parsec-windows.exe....')
+os.startfile(destination + filename)
+time.sleep (8) #Pause for 10 seconds so that the first application can be installed
+print('Install two parsec-VUD-0.1.1.0.exe')
+os.startfile(destination + filename_2)
+
+time.sleep(3.5)
+print('Deleting default config.txt from Parsec folder.')
+#removing default config.txt from Parsec
+try:
+    os.remove(client_wacom)
+except FileNotFoundError():
+    print('The file was not found.')
+except PermissionError():
+    print('You do not have permission to delete the file or folder.')
+else:
+    print(client_wacom + ' was deleted.')
+
+print('Creating updated config.txt on '+ config_path)
+
+time.sleep(2.5)
+#replacing new config.txt with updated app_channel line to client_wacom
+with open (config_path + 'config.txt', 'w') as file:
+    file.write('''# All configuration settings must appear on a new line.
+# All whitespace, besides the newline character '\\n', is ignored.
+# All settings passed via the command line take precedence.
+# The configuration file will be overwritten by Parsec when changing settings,
+#   so if you edit this file while Parsec is running, make sure to save this file
+#   and restart Parsec immediately so your changes are preserved.
+
+# Example:
+# encoder_bitrate = 10
+
+app_channel = client_wacom
+app_run_level = 1
+client_pen_type = 2
+''')
+
+    print ('Config.txt has been created')
+
+print('Script has been completed.')
+time.sleep(6)
