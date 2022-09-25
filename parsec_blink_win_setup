@@ -7,9 +7,11 @@ usrname = getpass.getuser()
 
 #variable to save Parsec installer and Parsec Virtual Drive application on specified directory
 destination = f'C:\\Users\\{usrname}\\Downloads\\'
+
 #filepath location of the Parsec config.txt 
 client_wacom = f'C:\\Users\\{usrname}\\AppData\\Roaming\\Parsec\\config.txt'
 config_path = f'C:\\Users\\{usrname}\\AppData\\Roaming\\Parsec\\'
+
 #variable to run kill command for the parsec service once it installs
 shutdown = 'C:\Program Files\Parsec\wscripts\service-kill-parsec.vbs'
 boot_up = 'C:\Program Files\Parsec\parsecd.exe'
@@ -19,6 +21,7 @@ print('Parsec installer and Parsec VUD installer are downloading...')
 parsecURL = 'https://builds.parsecgaming.com/package/parsec-windows.exe'
 vudURL = 'https://builds.parsec.app/vud/parsec-vud-0.1.1.0.exe'
 
+#using requests function to make sure official URL with installers is active
 parsec = requests.get(parsecURL,allow_redirects=True)
 vud = requests.get(vudURL,allow_redirects=True)
 
@@ -52,7 +55,7 @@ time.sleep (8) #Pause for 10 seconds so that the first application can be instal
 print('Install 2: parsec-VUD-0.1.1.0.exe...')
 os.startfile(destination + filename_2)
 
-#a function to pause the script and wait for the user to install the executables
+#function to pause the script and wait for the user to install the executables
 def thats_alright_i_can_wait(config_path):
     while (config_path):
         if not os.path.exists(config_path):
