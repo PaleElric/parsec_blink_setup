@@ -1,6 +1,7 @@
 import requests, getpass, time, os
 
-
+print('Hello,script is now running...')
+      
 #variable to retrieve local username account the script is run on
 usrname = getpass.getuser()
 
@@ -9,8 +10,11 @@ destination = f'C:\\Users\\{usrname}\\Downloads\\'
 #filepath location of the Parsec config.txt 
 client_wacom = f'C:\\Users\\{usrname}\\AppData\\Roaming\\Parsec\\config.txt'
 config_path = f'C:\\Users\\{usrname}\\AppData\\Roaming\\Parsec\\'
+#variable to run kill command for the parsec service once it installs
+shutdown = 'C:\Program Files\Parsec\wscripts\service-kill-parsec.vbs'
+boot_up = 'C:\Program Files\Parsec\parsecd.exe'
 
-print('Parsec installer and Parsec VUD installer are downloading.')
+print('Parsec installer and Parsec VUD installer are downloading...')
 
 parsecURL = 'https://builds.parsecgaming.com/package/parsec-windows.exe'
 vudURL = 'https://builds.parsec.app/vud/parsec-vud-0.1.1.0.exe'
@@ -21,20 +25,50 @@ vud = requests.get(vudURL,allow_redirects=True)
 filename = parsec.url[parsecURL.rfind('/')+1:]
 filename_2 = vud.url[vudURL.rfind('/')+1:]
 
-print('Starting Parsec executables...')
-                   
 open(destination + filename, 'wb').write(parsec.content)
 open(destination + filename_2, 'wb').write(vud.content)
 
+#path variables for the mic_check function
+parsec_path = destination + filename
+vud_path = destination + filename_2
+parsec_pack = parsec_path, vud_path
+
+#function to check that the parsec installers have been downloaded
+def mic_check(the_golden_path):
+    if os.path.exists(the_golden_path):
+        print(f'{the_golden_path} has been downloaded.')
+    else:
+        print(f"{the_golden_path} doesn't exist.")
+    
+mic_check(parsec_path)
+mic_check(vud_path)
+
+print('Starting Parsec executables...')
+
 time.sleep(4) #Pause for 4 second for applications to download
-print('Install one parsec-windows.exe....')
+print('Install 1: parsec-windows.exe....')
 os.startfile(destination + filename)
 time.sleep (8) #Pause for 10 seconds so that the first application can be installed
-print('Install two parsec-VUD-0.1.1.0.exe')
+print('Install 2: parsec-VUD-0.1.1.0.exe...')
 os.startfile(destination + filename_2)
 
-time.sleep(3.5)
-print('Deleting default config.txt from Parsec folder.')
+#a function to pause the script and wait for the user to install the executables
+def thats_alright_i_can_wait(config_path):
+    while (config_path):
+        if not os.path.exists(config_path):
+            time.sleep(2.5) #can be modified
+            print('Path not found, waiting for Parsec to be installed...')
+        else:
+            print('Filepath confirmed, advancing with script...')
+            break
+
+thats_alright_i_can_wait(config_path)
+thats_alright_i_can_wait(client_wacom)
+
+time.sleep(1.5)
+print('Restarting parsec application...')
+os.startfile(shutdown)
+
 #removing default config.txt from Parsec
 try:
     os.remove(client_wacom)
@@ -42,13 +76,16 @@ except FileNotFoundError():
     print('The file was not found.')
 except PermissionError():
     print('You do not have permission to delete the file or folder.')
+except TypeError():
+    print('The file was not found.')
 else:
     print(client_wacom + ' was deleted.')
 
-print('Creating updated config.txt on '+ config_path)
+print('Updating configuration settings at '+ config_path)
 
 time.sleep(2.5)
 #replacing new config.txt with updated app_channel line to client_wacom
+
 with open (config_path + 'config.txt', 'w') as file:
     file.write('''# All configuration settings must appear on a new line.
 # All whitespace, besides the newline character '\\n', is ignored.
@@ -65,7 +102,8 @@ app_run_level = 1
 client_pen_type = 2
 ''')
 
-    print ('Config.txt has been created')
+print ('Settings have been updated.')
 
+os.startfile(boot_up)
 print('Script has been completed.')
 time.sleep(6)
