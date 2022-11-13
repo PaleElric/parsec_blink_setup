@@ -20,9 +20,9 @@ def main():
     one_clnt_path = [client_wacom, shared_cw_path]
 
     #variable to run kill command for the parsec service once it installs
-    shutdown = 'C:\Program Files\Parsec\wscripts\service-kill-parsec.vbs'
+    shutdown = 'C:\\Program Files\\Parsec\\wscripts\\service-kill-parsec.vbs'
     #variable to start up parsec
-    boot_up = 'C:\Program Files\Parsec\parsecd.exe'
+    boot_up = 'C:\\Program Files\\Parsec\\parsecd.exe'
     print('Parsec installer and Parsec VUD installer are downloading...')
 
     parsecURL = 'https://builds.parsecgaming.com/package/parsec-windows.exe'
@@ -86,19 +86,19 @@ def main():
         for path in paths:
             if os.path.exists(path):
                 true_path = "{}".format(path)
-        return(true_path)
+                return(true_path)
 
     time.sleep(2.5)
     one_and_only = path_is_true(one_clnt_path)
 
     #removing default config.txt from Parsec
     try:
-        os.remove(one_and_only)
-    except FileNotFoundError():
+        os.remove(one_and_only)  # type: ignore
+    except FileNotFoundError(): # type: ignore
         print('The file was not found.')
-    except PermissionError():
+    except PermissionError(): # type: ignore
         print('You do not have permission to delete the file or folder.')
-    except TypeError():
+    except TypeError(): # type: ignore
         print('The file was not found.')
     else:
         print('Default config was deleted...')
