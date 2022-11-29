@@ -122,8 +122,13 @@ def main():
     # encoder_bitrate = 10
 
     app_channel = client_wacom
+    app_flags = 1
     app_run_level = 1
+    app_changelog_ver = 6
     client_pen_type = 2
+    client_windowed = 1
+    host_virtual_monitors = 1
+    host_virtual_tablet = 1
     ''')
         else:
             with open (path_2+ 'config.txt', 'w') as file:
@@ -138,8 +143,13 @@ def main():
     # encoder_bitrate = 10
 
     app_channel = client_wacom
+    app_flags = 1
     app_run_level = 1
+    app_changelog_ver = 6
     client_pen_type = 2
+    client_windowed = 1
+    host_virtual_monitors = 1
+    host_virtual_tablet = 1
     ''')
     print ('Settings have been updated.')
 
